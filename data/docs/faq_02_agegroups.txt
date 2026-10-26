@@ -1,0 +1,3 @@
+# Which age group is my child in?
+
+Age group is set by the player's age on 31 August of the season year, not by school year. If your child turns nine on 1 September they play in the under-nine group for that whole season.
