@@ -50,6 +50,22 @@ What the numbers say:
 - **Retrieval never failed:** 0 retrieval failures in every run, with two different embedding models. Every miss was in generation.
 - **More context did not help:** k=5 scored one point lower than k=3. With retrieval already perfect, extra chunks only added noise. This is one run on 15 cases, so treat it as weak evidence.
 
+## Larger-corpus test
+
+To test retrieval beyond 20 one-chunk documents, I built `data/docs_large/`: the original 20 plus 14 synthetic documents I wrote with an AI assistant (40 chunks in total). Eleven are short and deliberately overlap in vocabulary with the originals (holiday-camp refunds, adult-section instalments, lost property, tournament weather, privacy) and three are longer multi-chunk documents (constitution, annual report, coach handbook). The same eval questions were re-scored with no change to the app.
+
+| Set | Corpus | Score | Failures |
+| --- | --- | --- | --- |
+| Main (15) | 20 docs | 15/15 | none |
+| Main (15) | 34 docs | 13/15 | 1 **retrieval**, 1 generation |
+| Hold-out (10) | 20 docs | 10/10 | none |
+| Hold-out (10) | 34 docs | 9/10 | 1 invalid case (see below) |
+
+- **First retrieval failure:** "Who is the club treasurer and what is the kit return policy?" retrieved `faq_05_refunds`, `x03_fundraising` and `x10_lost_property` but not `handbook_03_kit`. The lost-property document ("kit issued by the club ... is returned to the equipment officer") sits closer to "kit return policy" than the real kit rule does, and the app answered from the wrong document instead of refusing. This is the failure mode a tiny corpus hides.
+- **Case 9 ("can't afford the subscription")** dropped the word "confidentially" even though the right documents were retrieved. It has wobbled across several runs, so I treat it as noise near the pass/fail boundary.
+- **Hold-out case 8 ("dogs") was my own test-data mistake:** the synthetic parking document contained a dog rule, so the question became answerable and the app correctly answered it. The document has been corrected; the original run is kept in `eval_results.json` with a note, and the score above is as recorded.
+- The new documents are synthetic and still a small corpus. Real, messier documents would be a harder test.
+
 ## Tradeoffs
 
 - Moving rules into code makes behaviour predictable and testable (9 unit tests on the shipped validator).
