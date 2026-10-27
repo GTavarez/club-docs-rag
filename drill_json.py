@@ -34,7 +34,10 @@ from rag import CHAT_MODEL, client, index, retrieve
 SYSTEM_JSON = (
     "Answer only from the provided context. "
     'Reply with JSON only, in this shape: {"found": true, "answer": "...", "sources": ["file.txt"]}. '
-    'If the answer is not in the context, reply: {"found": false, "answer": "I don\'t know.", "sources": []}'
+    'If the answer is not in the context, reply: {"found": false, "answer": "I don\'t know.", "sources": []} '
+    "If the question has several parts and the context answers only some of them, "
+    'reply with found true: answer the parts the context covers, and end the answer with "Not in the documents: <the missing part>." '
+    "List in sources only the files you used."
 )
 REFUSAL = {"found": False, "answer": "I don't know.", "sources": []}
 
