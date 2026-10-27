@@ -31,6 +31,7 @@ The provider is swappable (`RAG_PROVIDER=ollama|gemini`), so the same code runs 
 | Stronger model on the shipped (baseline) validator | gemini-3.5-flash-lite | **14/15** |
 | Retrieve k=5 instead of k=3 | gemini-3.5-flash-lite | 13/15 |
 | Prompt rule: answer the parts of a multi-part question the documents cover, and name the missing part | gemini-3.5-flash-lite | **15/15** (one run) |
+| Same app, **10 unseen hold-out questions** (4 plain, 3 multi-part, 2 must-refuse, 1 false-premise) | gemini-3.5-flash-lite | **10/10** (one run) |
 
 \* **These two experiments are not in this repository.** The code for them was overwritten in my working folder before the first commit, so the repo contains the earlier, simpler validator (shape and type checks, sources must be among the retrieved files, refusal normalisation, one retry). The 11/15 and 12/15 results were measured at the time and are recorded in `eval_results.json`, but you cannot reproduce them from this code. The 14/15 and 13/15 rows below them were run on the code in this repo (the 14/15 was also measured earlier on the Day-24 code, with the same result).
 
@@ -50,7 +51,7 @@ What the numbers say:
 
 ## Limitations
 
-- **The 15/15 is optimistic.** I wrote the partial-answer rule after seeing case 15 fail, so the eval set is no longer an unseen test for that change. It is also a single run on 15 cases. The next step is fresh multi-part questions I have not looked at.
+- **The 15/15 is optimistic.** I wrote the partial-answer rule after seeing case 15 fail, so that eval set is no longer an unseen test for that change. To check, I scored 10 hold-out questions (`eval_holdout.py`) that were written and committed before scoring and never used to tune the prompt: 10/10. That is a better signal, but still a single run on a small set, on one model, and the hold-out questions were drafted with an AI assistant from the same documents, so they are not independent of how the documents are worded. The checker also only looks for key facts, not for fully correct wording.
 - The eval set is small (15 cases); one case is about 7 percentage points.
 - `gemini-3.6-flash` was not scored (free-tier quota), so there is no comparison against it.
 - The app runs on a free API tier. Under heavy use it can hit rate or daily limits and will show a "service problem" message rather than a wrong answer.
@@ -58,7 +59,7 @@ What the numbers say:
 
 ## What I'd do next
 
-1. Write 10 new, unseen questions (including multi-part and half-answerable ones) and score them, to check the 15/15 holds up.
+1. Write harder hold-out questions: paraphrases, questions that need two documents, and questions where the documents contradict each other, and score them.
 2. Score `gemini-3.6-flash` on a paid or higher-quota key and compare it with 3.5-flash-lite.
 3. Grow the eval set beyond 15 cases and add paraphrased variants of each question.
 

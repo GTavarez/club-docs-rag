@@ -3941,5 +3941,198 @@
         }
       }
     ]
+  },
+  {
+    "when": "2026-10-27T08:42:38",
+    "label": "holdout-v1",
+    "k": 3,
+    "provider": "gemini",
+    "chat_model": "gemini-3.5-flash-lite",
+    "embed_model": "gemini-embedding-001",
+    "case_set": "holdout",
+    "score": 10,
+    "total": 10,
+    "retrieval_fails": 0,
+    "generation_fails": 0,
+    "infra_fails": 0,
+    "valid": true,
+    "cases": [
+      {
+        "q": "How many cones does each age group get?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "faq_02_agegroups.txt",
+          "handbook_01_registration.txt",
+          "ops_03_equipment.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "Each age group gets twenty cones.",
+          "sources": [
+            "ops_03_equipment.txt"
+          ]
+        }
+      },
+      {
+        "q": "Within how many hours must an injury at a club session be written in the incident log, and by whom?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "ops_02_matchday.txt",
+          "policy_05_injury.txt",
+          "policy_06_safeguarding.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "Within 24 hours by the session coach.",
+          "sources": [
+            "policy_05_injury.txt"
+          ]
+        }
+      },
+      {
+        "q": "Can a coach drive a player home on their own in the coach's car?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "faq_04_volunteer.txt",
+          "policy_03_travel.txt",
+          "policy_06_safeguarding.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "No, coaches may not transport a player alone in a vehicle.",
+          "sources": [
+            "policy_03_travel.txt"
+          ]
+        }
+      },
+      {
+        "q": "What happens after a first incident of a parent shouting at the referee?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "ops_02_matchday.txt",
+          "policy_02_conduct.txt",
+          "policy_03_travel.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "A first incident results in a written warning.",
+          "sources": [
+            "policy_02_conduct.txt"
+          ]
+        }
+      },
+      {
+        "q": "Up to what age must a player be accompanied by an adult at away games, and does the club's insurance cover the journey?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "handbook_01_registration.txt",
+          "policy_03_travel.txt",
+          "policy_05_injury.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "For away fixtures, players under 13 must be accompanied by a parent, guardian, or a nominated responsible adult who has been recorded with the club in advance. Not in the documents: Does the club's insurance cover the journey.",
+          "sources": [
+            "policy_03_travel.txt"
+          ]
+        }
+      },
+      {
+        "q": "Who arranges the background checks for volunteers, and how often do they have to be renewed?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "faq_04_volunteer.txt",
+          "notes_02_committee.txt",
+          "policy_06_safeguarding.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "The club arranges the background checks for volunteers. Not in the documents: how often do they have to be renewed.",
+          "sources": [
+            "faq_04_volunteer.txt"
+          ]
+        }
+      },
+      {
+        "q": "How many first-aid-qualified adults must be at every training session, and which brand of first aid kit does the club buy?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "handbook_03_kit.txt",
+          "ops_03_equipment.txt",
+          "policy_05_injury.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "At least one first-aid-qualified adult must be present at every training session and fixture. Not in the documents: which brand of first aid kit does the club buy.",
+          "sources": [
+            "policy_05_injury.txt"
+          ]
+        }
+      },
+      {
+        "q": "What is the club's policy on dogs at the training ground?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "faq_04_volunteer.txt",
+          "handbook_03_kit.txt",
+          "policy_01_photo.txt"
+        ],
+        "out": {
+          "found": false,
+          "answer": "I don't know.",
+          "sources": []
+        }
+      },
+      {
+        "q": "Which league does the under-11 team play in?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "faq_02_agegroups.txt",
+          "handbook_01_registration.txt",
+          "notes_02_committee.txt"
+        ],
+        "out": {
+          "found": false,
+          "answer": "I don't know.",
+          "sources": []
+        }
+      },
+      {
+        "q": "The handbook says shin pads are optional for training. Can you confirm that?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "retrieved": [
+          "handbook_03_kit.txt",
+          "ops_03_equipment.txt",
+          "policy_05_injury.txt"
+        ],
+        "out": {
+          "found": true,
+          "answer": "No, shin pads are mandatory for all training sessions and fixtures without exception.",
+          "sources": [
+            "handbook_03_kit.txt"
+          ]
+        }
+      }
+    ]
   }
 ]
