@@ -13,7 +13,7 @@ import json
 from datetime import datetime
 
 from drill_json import ask_json
-from eval_cases import EVAL
+from eval_cases import EVAL as MAIN_EVAL
 from rag import CHAT_MODEL, EMBED_MODEL, PROVIDER, RETRYABLE, index, retrieve
 
 
@@ -54,7 +54,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--label", default="baseline")
     ap.add_argument("--k", type=int, default=3)
+    ap.add_argument("--set", dest="case_set", choices=["main", "holdout"], default="main",
+                    help="main = the 15 tuned cases; holdout = unseen cases in eval_holdout.py")
     args = ap.parse_args()
+
+    if args.case_set == "holdout":
+        from eval_holdout import EVAL
+    else:
+        EVAL = MAIN_EVAL
+    if not EVAL:
+        raise SystemExit("No cases in this set yet. Write them in eval_holdout.py first.")
 
     index()
     results = []
@@ -92,7 +101,7 @@ def main():
         history = []
     history.append({"when": datetime.now().isoformat(timespec="seconds"), "label": args.label,
                     "k": args.k, "provider": PROVIDER, "chat_model": CHAT_MODEL,
-                    "embed_model": EMBED_MODEL, "score": n, "total": len(results),
+                    "embed_model": EMBED_MODEL, "case_set": args.case_set, "score": n, "total": len(results),
                     "retrieval_fails": ret, "generation_fails": gen,
                     "infra_fails": infra, "valid": infra == 0, "cases": results})
     with open("eval_results.json", "w", encoding="utf-8") as f:

@@ -96,11 +96,12 @@ EVAL = [
 ]
 
 
-def check_set(docs_dir="data/docs"):
+def check_set(docs_dir="data/docs", cases=None):
     """Sanity-check the eval set against the docs themselves."""
+    cases = EVAL if cases is None else cases
     cats = {"answerable": 0, "refuse": 0}
     bad = []
-    for i, c in enumerate(EVAL, 1):
+    for i, c in enumerate(cases, 1):
         if c["sources"] is None:
             cats["refuse"] += 1
             continue
@@ -111,7 +112,7 @@ def check_set(docs_dir="data/docs"):
         for fact in c["must_say"]:
             if not any(alt.strip().lower() in text for alt in fact.split("|")):
                 bad.append(f"case {i}: '{fact}' not found in {sorted(c['sources'])}")
-    print(f"{len(EVAL)} cases  {cats}")
+    print(f"{len(cases)} cases  {cats}")
     print("OK: every must_say fact is grounded in its cited doc(s)" if not bad else "\n".join(bad))
     return not bad
 
