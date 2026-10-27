@@ -2,7 +2,7 @@
 
 A small retrieval-augmented question-answering app over 20 club documents (FAQs, handbook, policies, committee notes). Built from scratch with no RAG framework. Answers come only from the documents, and when the documents don't contain the answer, the app says so.
 
-**Live app:** TODO-paste-your-streamlit-url
+**Live app:** https://club-docs-rag-bdiqwj59dhm5h7rncrszqk.streamlit.app/
 
 ## Problem
 
@@ -31,7 +31,7 @@ The provider is swappable (`RAG_PROVIDER=ollama|gemini`), so the same code runs 
 | Stronger model, no other change | gemini-3.5-flash-lite | **14/15** |
 | Retrieve k=5 instead of k=3 | gemini-3.5-flash-lite | 13/15 |
 
-The deployed app uses `gemini-3.6-flash`. **Not yet scored:** the free-tier daily quota was exhausted before a valid run completed (those runs are kept in `eval_results.json`, marked invalid). The 14/15 figure is for gemini-3.5-flash-lite.
+The deployed app uses `gemini-3.5-flash-lite`, the model behind the 14/15 figure (two complete runs, same single failure). I also tried `gemini-3.6-flash`, but the free-tier quota ran out mid-run three times, so no valid score exists for it. Those runs are kept in `eval_results.json`, marked invalid, rather than deleted. The cases that did reach 3.6-flash showed the same case-15 failure.
 
 What the numbers say:
 
@@ -49,14 +49,14 @@ What the numbers say:
 
 - **Case 15 fails:** "Who is the club treasurer and what is the kit return policy?" is refused although both halves are in the documents. My suspicion is the single-quote schema cannot prove two half-answers. Not yet tested.
 - The eval set is small (15 cases); one case is about 7 percentage points.
-- The score for the deployed model is pending (see above).
+- `gemini-3.6-flash` was not scored (free-tier quota), so there is no comparison against it.
 - The app runs on a free API tier. Under heavy use it can hit rate or daily limits and will show a "service problem" message rather than a wrong answer.
 - The index is rebuilt in memory on each cold start.
 
 ## What I'd do next
 
 1. Allow a list of quotes so compound questions can cite multiple sources, then re-score.
-2. Score the deployed model once quota allows.
+2. Score `gemini-3.6-flash` on a paid or higher-quota key and compare it with 3.5-flash-lite.
 3. Grow the eval set beyond 15 cases and add paraphrased variants of each question.
 
 ## Run locally
