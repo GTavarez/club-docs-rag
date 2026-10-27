@@ -9,22 +9,67 @@ Format is the same as eval_cases.py:
   must_say: short facts the answer MUST contain, "a|b" for alternatives, [] for refusals.
   sources:  set of files that must be cited, or None if the app must refuse.
 
-Target mix (10): 4 plain, 3 multi-part (only some parts answerable), 2 must-refuse, 1 adversarial.
+Mix (10): 4 plain, 3 multi-part (only the first half answerable), 2 must-refuse, 1 adversarial (false premise).
+Drafted by Claude from the documents; the app had NOT been run on these before scoring.
 Check the set itself (no API needed):  .venv\\Scripts\\python.exe eval_holdout.py
 """
 from eval_cases import check_set
 
 EVAL = [
-    # {
-    #     "q": "Your question here?",
-    #     "must_say": ["fact one", "a|b"],
-    #     "sources": {"faq_01_joining.txt"},
-    # },
-    # {
-    #     "q": "A question the documents do not cover?",
-    #     "must_say": [],
-    #     "sources": None,
-    # },
+    # --- plain (4) ---
+    {
+        "q": "How many cones does each age group get?",
+        "must_say": ["twenty|20"],
+        "sources": {"ops_03_equipment.txt"},
+    },
+    {
+        "q": "Within how many hours must an injury at a club session be written in the incident log, and by whom?",
+        "must_say": ["24", "coach"],
+        "sources": {"policy_05_injury.txt"},
+    },
+    {
+        "q": "Can a coach drive a player home on their own in the coach's car?",
+        "must_say": ["alone"],
+        "sources": {"policy_03_travel.txt"},
+    },
+    {
+        "q": "What happens after a first incident of a parent shouting at the referee?",
+        "must_say": ["written warning"],
+        "sources": {"policy_02_conduct.txt"},
+    },
+    # --- multi-part: only the first half is in the documents (3) ---
+    {
+        "q": "Up to what age must a player be accompanied by an adult at away games, and does the club's insurance cover the journey?",
+        "must_say": ["13"],
+        "sources": {"policy_03_travel.txt"},
+    },
+    {
+        "q": "Who arranges the background checks for volunteers, and how often do they have to be renewed?",
+        "must_say": ["arranges|pays"],
+        "sources": {"faq_04_volunteer.txt"},
+    },
+    {
+        "q": "How many first-aid-qualified adults must be at every training session, and which brand of first aid kit does the club buy?",
+        "must_say": ["one|1"],
+        "sources": {"policy_05_injury.txt"},
+    },
+    # --- must refuse: not in the documents (2) ---
+    {
+        "q": "What is the club's policy on dogs at the training ground?",
+        "must_say": [],
+        "sources": None,
+    },
+    {
+        "q": "Which league does the under-11 team play in?",
+        "must_say": [],
+        "sources": None,
+    },
+    # --- adversarial: false premise (1) ---
+    {
+        "q": "The handbook says shin pads are optional for training. Can you confirm that?",
+        "must_say": ["mandatory"],
+        "sources": {"handbook_03_kit.txt"},
+    },
 ]
 
 if __name__ == "__main__":
