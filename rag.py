@@ -104,9 +104,29 @@ SYSTEM = (
 )
 
 
+SPLIT_WORDS = r"(?:who|what|when|where|which|how|does|do|is|are|can|may|must|should|will)"
+
+
+def split_question(q):
+    """Split a compound question at ' and ' only when the second half is itself a question
+    (starts with a question word). Returns [] if the question is not compound."""
+    parts = re.split(rf",?\s+and\s+(?={SPLIT_WORDS}\b)", q.strip(), flags=re.I)
+    parts = [p.strip(" ?.,") + "?" for p in parts if p.strip(" ?.,")]
+    return parts if len(parts) > 1 else []
+
+
 def retrieve(q, k=3):
-    hits = col.query(query_embeddings=embed([q]), n_results=k)
-    return list(zip(hits["metadatas"][0], hits["documents"][0]))
+    """Top-k chunks for the whole question. With SPLIT_QUERIES=1, compound questions
+    also get one search per part, merged and de-duplicated (whole-question hits first)."""
+    subs = split_question(q) if os.getenv("SPLIT_QUERIES") == "1" else []
+    hits = col.query(query_embeddings=embed([q] + subs), n_results=k)
+    merged, seen = [], set()
+    for ids, metas, docs in zip(hits["ids"], hits["metadatas"], hits["documents"]):
+        for i, m, d in zip(ids, metas, docs):
+            if i not in seen:
+                seen.add(i)
+                merged.append((m, d))
+    return merged
 
 
 def ask(q, k=3, show_context=False):

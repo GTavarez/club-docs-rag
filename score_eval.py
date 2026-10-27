@@ -103,7 +103,8 @@ def main():
     history.append({"when": datetime.now().isoformat(timespec="seconds"), "label": args.label,
                     "k": args.k, "provider": PROVIDER, "chat_model": CHAT_MODEL,
                     "embed_model": EMBED_MODEL, "case_set": args.case_set,
-                    "docs_glob": os.getenv("DOCS_GLOB", "data/docs/*.txt"), "score": n, "total": len(results),
+                    "docs_glob": os.getenv("DOCS_GLOB", "data/docs/*.txt"),
+                    "split_queries": os.getenv("SPLIT_QUERIES") == "1", "score": n, "total": len(results),
                     "retrieval_fails": ret, "generation_fails": gen,
                     "infra_fails": infra, "valid": infra == 0, "cases": results})
     with open("eval_results.json", "w", encoding="utf-8") as f:
