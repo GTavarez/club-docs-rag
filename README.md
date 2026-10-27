@@ -4,6 +4,13 @@ A small retrieval-augmented question-answering app over 20 club documents (FAQs,
 
 **Live app:** https://club-docs-rag-bdiqwj59dhm5h7rncrszqk.streamlit.app/
 
+## At a glance
+
+- **What:** retrieval-augmented Q&A over 20 club documents, built without a RAG framework (chromadb + embeddings + a validated JSON answer).
+- **Behaviour:** answers only from the documents and cites its source. It says "I don't know" when the answer isn't there, and on multi-part questions it answers the covered part and names the missing one.
+- **Measured:** 15/15 on a 15-case eval (14/15 before one prompt change) and 10/10 on 10 unseen hold-out questions, on `gemini-3.5-flash-lite`. Every miss in every run was a generation failure, none were retrieval failures.
+- **Be sceptical of:** the corpus is small (see Limitations), the eval sets are small and single-run, and no one but the author has used it yet.
+
 ## Problem
 
 Club members ask the same questions repeatedly (trial sessions, refunds, weather cancellations, who to contact), and the answers are spread across many files. A plain chatbot would invent plausible answers. The goal here was an assistant that is **grounded** (cites its source) and **honest** (refuses when the answer isn't in the documents).
@@ -51,6 +58,7 @@ What the numbers say:
 
 ## Limitations
 
+- **The corpus is tiny.** There are 20 short documents, each fitting in a single chunk, so chunking strategy is never really exercised and "0 retrieval failures" is expected with top-3 out of 20. These results say little about retrieval quality on a real, larger or messier corpus.
 - **The 15/15 is optimistic.** I wrote the partial-answer rule after seeing case 15 fail, so that eval set is no longer an unseen test for that change. To check, I scored 10 hold-out questions (`eval_holdout.py`) that were written and committed before scoring and never used to tune the prompt: 10/10. That is a better signal, but still a single run on a small set, on one model, and the hold-out questions were drafted with an AI assistant from the same documents, so they are not independent of how the documents are worded. The checker also only looks for key facts, not for fully correct wording.
 - The eval set is small (15 cases); one case is about 7 percentage points.
 - `gemini-3.6-flash` was not scored (free-tier quota), so there is no comparison against it.
@@ -62,6 +70,18 @@ What the numbers say:
 1. Write harder hold-out questions: paraphrases, questions that need two documents, and questions where the documents contradict each other, and score them.
 2. Score `gemini-3.6-flash` on a paid or higher-quota key and compare it with 3.5-flash-lite.
 3. Grow the eval set beyond 15 cases and add paraphrased variants of each question.
+
+## Repository layout
+
+| File | Purpose |
+| --- | --- |
+| `app.py` | Streamlit UI |
+| `rag.py` | Chunking, embeddings, retrieval, provider switch, retry/backoff |
+| `drill_json.py` | JSON answer prompt, `validate()`, `ask_json()` (historical filename) |
+| `eval_cases.py`, `eval_holdout.py` | The 15-case eval set and the 10-question hold-out set |
+| `score_eval.py` | Scores a set, tags failures RETRIEVAL / GENERATION / INFRA, appends to `eval_results.json` |
+| `test_validate.py` | Unit tests for `validate()` |
+| `data/docs/` | The 20 source documents |
 
 ## Run locally
 
