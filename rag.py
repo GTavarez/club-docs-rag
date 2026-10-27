@@ -82,7 +82,8 @@ def chunk(text, size=800, overlap=100):
     return [text[i:i + size] for i in range(0, len(text), size - overlap)]
 
 
-def index(pattern="data/docs/*.txt"):
+def index(pattern=None):
+    pattern = pattern or os.getenv("DOCS_GLOB", "data/docs/*.txt")
     ids, docs, metas = [], [], []
     for path in sorted(glob.glob(pattern)):
         name = os.path.basename(path)

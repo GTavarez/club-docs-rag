@@ -10,6 +10,7 @@ Results are appended to eval_results.json so you can compare before/after.
 """
 import argparse
 import json
+import os
 from datetime import datetime
 
 from drill_json import ask_json
@@ -101,7 +102,8 @@ def main():
         history = []
     history.append({"when": datetime.now().isoformat(timespec="seconds"), "label": args.label,
                     "k": args.k, "provider": PROVIDER, "chat_model": CHAT_MODEL,
-                    "embed_model": EMBED_MODEL, "case_set": args.case_set, "score": n, "total": len(results),
+                    "embed_model": EMBED_MODEL, "case_set": args.case_set,
+                    "docs_glob": os.getenv("DOCS_GLOB", "data/docs/*.txt"), "score": n, "total": len(results),
                     "retrieval_fails": ret, "generation_fails": gen,
                     "infra_fails": infra, "valid": infra == 0, "cases": results})
     with open("eval_results.json", "w", encoding="utf-8") as f:
