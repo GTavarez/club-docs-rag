@@ -66,6 +66,22 @@ To test retrieval beyond 20 one-chunk documents, I built `data/docs_large/`: the
 - **Hold-out case 8 ("dogs") was my own test-data mistake:** the synthetic parking document contained a dog rule, so the question became answerable and the app correctly answered it. The document has been corrected; the original run is kept in `eval_results.json` with a note, and the score above is as recorded.
 - The new documents are synthetic and still a small corpus. Real, messier documents would be a harder test.
 
+### Fixing the retrieval failure (one variable at a time)
+
+| Change | Corpus | Main (15) | Hold-out (10) | Effect on the retrieval failure |
+| --- | --- | --- | --- | --- |
+| none (k=3) | 34 docs | 13/15 | 9/10* | case 15 still fails (wrong document retrieved) |
+| retrieve k=5 | 34 docs | 13/15 | not run | **no help**: the kit handbook still never appears in the top 5 |
+| split compound questions, one search per part (`SPLIT_QUERIES=1`) | 34 docs | **15/15** | **10/10** | fixed |
+| splitting on | 20 docs | 14/15 | invalid (1 rate-limited case) | not needed here; cost one borderline case |
+
+\* the one miss was my own test-data mistake (see above).
+
+- **More context was not the answer; the query was.** "Who is the club treasurer and what is the kit return policy?" is one embedding that mixes two topics, so it lands nearer to refunds and lost-property documents than to the kit handbook. Searching for each part separately (and also for the whole question) fixes it.
+- **Caveat: I built the fix after seeing case 15 fail.** The hold-out set (10/10) was not used to design it, which is why that number matters more than the main-set 15/15.
+- **It is not free.** Case 9 ("we can't afford the subscription") passes when the model sees exactly the three expected chunks and tends to fail when extra chunks are added (k=5, the larger corpus, and splitting on the small corpus). Splitting adds chunks on compound questions, so on the 20-document corpus it probably cost that borderline case and gained nothing.
+- **Decision:** the live app, which uses the 20-document corpus, keeps the original behaviour. Splitting stays an opt-in flag, validated for a larger corpus. It should be turned on when the corpus grows, and re-checked then.
+
 ## Tradeoffs
 
 - Moving rules into code makes behaviour predictable and testable (9 unit tests on the shipped validator).
@@ -83,9 +99,10 @@ To test retrieval beyond 20 one-chunk documents, I built `data/docs_large/`: the
 
 ## What I'd do next
 
-1. Write harder hold-out questions: paraphrases, questions that need two documents, and questions where the documents contradict each other, and score them.
-2. Score `gemini-3.6-flash` on a paid or higher-quota key and compare it with 3.5-flash-lite.
-3. Grow the eval set beyond 15 cases and add paraphrased variants of each question.
+1. Test on real, messy documents (not synthetic ones), with paraphrased questions and documents that contradict each other.
+2. Make the answer check less brittle: case 9 requires the word "confidential", which a correct answer can omit.
+3. Score `gemini-3.6-flash` on a paid or higher-quota key and compare it with 3.5-flash-lite.
+4. Grow the eval sets and score several runs per configuration, so single-run noise (like case 9) is visible.
 
 ## Repository layout
 
@@ -97,7 +114,8 @@ To test retrieval beyond 20 one-chunk documents, I built `data/docs_large/`: the
 | `eval_cases.py`, `eval_holdout.py` | The 15-case eval set and the 10-question hold-out set |
 | `score_eval.py` | Scores a set, tags failures RETRIEVAL / GENERATION / INFRA, appends to `eval_results.json` |
 | `test_validate.py` | Unit tests for `validate()` |
-| `data/docs/` | The 20 source documents |
+| `data/docs/` | The 20 source documents (what the live app indexes) |
+| `data/docs_large/` | The 20 originals plus 14 synthetic documents, for the larger-corpus test (`DOCS_GLOB=data/docs_large/*.txt`) |
 
 ## Run locally
 
