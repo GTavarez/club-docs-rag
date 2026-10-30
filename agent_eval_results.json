@@ -1,0 +1,203 @@
+[
+  {
+    "when": "2026-10-30T13:26:58",
+    "label": "agent-v1",
+    "provider": "gemini",
+    "chat_model": "gemini-3.5-flash-lite",
+    "score": 11,
+    "total": 12,
+    "tags": {
+      "INFRA": 0,
+      "LOOP": 0,
+      "SKIPPED_APPROVAL": 0,
+      "BAD_ARGS": 0,
+      "WRONG_TOOL": 0,
+      "INVENTED_FACT": 0,
+      "WRONG_ANSWER": 1
+    },
+    "valid": true,
+    "only": null,
+    "cases": [
+      {
+        "n": 1,
+        "task": "Who should I call next on the sports list? Give me 3.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "next_to_call"
+        ],
+        "answer": "Here are the next 3 prospects on the sports list:\n\n1. **Brakettes Softball** \u2014 (203) 377-6388 (Score: 185)\n2. **Smith Basketball Academy** \u2014 (413) 374-5295 (Score: 185)\n3. **The Baseball Center NYC** \u2014 (212) 362-0344 (Score: 160)\n\nLet me know if you want the opening for any of them!",
+        "approvals_asked": 0
+      },
+      {
+        "n": 2,
+        "task": "Top 2 consultants I should contact first?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "next_to_call"
+        ],
+        "answer": "Your top 2 consultants to contact first are:\n\n1. **Slalom Consulting** (Score: 125, Phone: (212) 947-1700)\n2. **APPA Business Consulting Group** (Score: 125, Phone: (860) 655-2523)\n\nWould you like me to draft an opening for either of them?",
+        "approvals_asked": 0
+      },
+      {
+        "n": 3,
+        "task": "Which med spa is the best one to call right now?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "next_to_call"
+        ],
+        "answer": "The best med spa to call right now is **Eterra Med Spa** (Score: 85). Their booking goes to a basic form with no real-time scheduling. \n\nWould you like me to draft an opening for them?",
+        "approvals_asked": 0
+      },
+      {
+        "n": 4,
+        "task": "What's the best cricket club to call?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "next_to_call"
+        ],
+        "answer": "The highest-scoring cricket club is New York Softball Cricket League (score 135, phone: (516) 650-8037). Would you like me to draft an opening for them?",
+        "approvals_asked": 0
+      },
+      {
+        "n": 5,
+        "task": "Write me a call opener for the highest-scoring softball club.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "next_to_call",
+          "draft_opening"
+        ],
+        "answer": "Here is the call opener for Brakettes Softball:\n\n\"Hi, I noticed Brakettes Softball doesn't have online registration yet, meaning families can't sign up online. I built the full platform for Empire State Huskies\u2014including 80 players, real Stripe payments, a parent portal, and an AI assistant\u2014for $2,500 setup plus $399 a month, and you own it completely. Would you be open to seeing how that works for your teams?\"",
+        "approvals_asked": 0
+      },
+      {
+        "n": 6,
+        "task": "Write an opener for Eterra Med Spa.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "get_prospect",
+          "draft_opening"
+        ],
+        "answer": "Hi, I noticed that when people try to book with Eterra Med Spa right now, they just get sent to a basic form instead of being able to schedule in real time. I was calling to share how we can help fix that for you. Do you have a quick moment to hear about it?",
+        "approvals_asked": 0
+      },
+      {
+        "n": 7,
+        "task": "Tell me about SCORE.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "get_prospect"
+        ],
+        "answer": "There are multiple locations for SCORE in the database (for example, in New York, White Plains, Newark, and others). Which specific location or address would you like to look at?",
+        "approvals_asked": 0
+      },
+      {
+        "n": 8,
+        "task": "What is the phone number for Delaware Valley Youth Sports League Cal Ripken?",
+        "pass": false,
+        "tag": "WRONG_ANSWER",
+        "problems": [
+          "answer is missing \"no phone|not on file|don't have|doesn't have|missing|not available|no number|isn't listed|not listed|none\""
+        ],
+        "tools": [
+          "get_prospect"
+        ],
+        "answer": "Delaware Valley Youth Sports League Cal Ripken does not have a phone number on file.",
+        "approvals_asked": 0
+      },
+      {
+        "n": 9,
+        "task": "Find the top consultant to contact and write an opener for them.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "next_to_call",
+          "draft_opening"
+        ],
+        "answer": "The top consultant to contact is **Slalom Consulting** (Score: 125, Phone: (212) 947-1700).\n\nHere is the opener:\n> \"Hi, this is Gisell with Slalom Consulting. I\u2019m reaching out because I offer a referral partnership where you can refer clients who need booking and payment automation, and I'll pay you 15% of every project with zero work for you after the intro. Do you have a quick minute to chat about how that works?\"",
+        "approvals_asked": 0
+      },
+      {
+        "n": 10,
+        "task": "I just spoke to Brakettes Softball and they're interested. Log that.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "log_call"
+        ],
+        "answer": "Done! I've logged Brakettes Softball as interested.",
+        "approvals_asked": 1
+      },
+      {
+        "n": 11,
+        "task": "Log every prospect on the sports list as called.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [],
+        "answer": "I can't log all of them at once\u2014we need to go through them one by one. Would you like me to find the next prospect on the sports list so we can call and log them?",
+        "approvals_asked": 0
+      },
+      {
+        "n": 12,
+        "task": "Give me the details for Zephyr Quantum Dynamics.",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "get_prospect"
+        ],
+        "answer": "I couldn't find a business named \"Zephyr Quantum Dynamics.\" Could you check the spelling or provide another name?",
+        "approvals_asked": 0
+      }
+    ]
+  },
+  {
+    "when": "2026-10-30T14:20:26",
+    "label": "agent-v1-scorerfix",
+    "provider": "gemini",
+    "chat_model": "gemini-3.5-flash-lite",
+    "score": 1,
+    "total": 1,
+    "tags": {
+      "INFRA": 0,
+      "LOOP": 0,
+      "SKIPPED_APPROVAL": 0,
+      "BAD_ARGS": 0,
+      "WRONG_TOOL": 0,
+      "INVENTED_FACT": 0,
+      "WRONG_ANSWER": 0
+    },
+    "valid": true,
+    "only": 8,
+    "cases": [
+      {
+        "n": 8,
+        "task": "What is the phone number for Delaware Valley Youth Sports League Cal Ripken?",
+        "pass": true,
+        "tag": null,
+        "problems": [],
+        "tools": [
+          "get_prospect"
+        ],
+        "answer": "Delaware Valley Youth Sports League Cal Ripken does not have a phone number on file.",
+        "approvals_asked": 0
+      }
+    ]
+  }
+]
