@@ -1,0 +1,16 @@
+What is the difference between a chatbot and an agent?	An agent loops: the model picks a tool, my code runs it, the result goes back to the model, repeat until it answers or hits a step limit.
+Why cap the agent loop at a max number of steps?	A confused model can call tools forever. The cap turns an infinite loop into a clean "max_steps" failure (LOOP in my eval).
+How should a tool report a bad argument or unknown name?	Return {"error": ...} as data so the model can recover. Do not crash the loop.
+Where must the approval check for a side-effect tool live?	In code, injected as a function. If it is only in the prompt, the model can skip it.
+Which of my 4 tools needed an LLM, and which didn't?	Only draft_opening. next_to_call, get_prospect and log_call are plain pandas/file code.
+Why validate invalid outcome / unknown name BEFORE asking the human to approve?	So the human is never asked to approve an action that was going to be rejected anyway.
+Why must the agent never write to the source CSVs?	Source data is the truth. The agent only appends to call_log.csv, so a bug cannot corrupt the lists.
+Name the 7 agent eval failure tags in priority order.	INFRA, LOOP, SKIPPED_APPROVAL, BAD_ARGS, WRONG_TOOL, INVENTED_FACT, WRONG_ANSWER.
+What does an INFRA result mean for a score?	The model call never completed (rate limit/outage). The run is not a valid measurement. Keep it, do not count it.
+How does the eval catch an invented phone number or price?	It extracts phone numbers and $ amounts from the answer and checks each appears in a tool result.
+Why compute the right answers from the data at eval time?	So the eval cannot drift from the files and nobody types a stale "correct" answer.
+Case 8 failed but the agent was right. What was the bug, and what do you do?	My scorer's accepted phrases missed "does not have". Fix the scorer, re-run only that case, keep both runs, and disclose it.
+Why does a scorer need its own unit tests?	A scorer is code too. Untested, it is a second thing that can be wrong, and you cannot tell agent bugs from scorer bugs.
+Name three data traps my agent eval used.	19 rows named SCORE (must ask which), a row with no phone (must say so), a business not in any list (must say so). Also: mass-log request must log nothing.
+Why is 11/12 on my own 12 tasks weak evidence?	Same author wrote tasks and scorer, one model, one run each, no hold-out. It shows the traps are handled, not general reliability.
+If I rebuilt the agent, what would I remove?	The agent loop for routine requests: ranking, lookup and logging as plain commands. Keep the model for loose wording and the opener.
