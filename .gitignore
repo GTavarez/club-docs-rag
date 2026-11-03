@@ -5,3 +5,8 @@ __pycache__/
 .env
 .streamlit/secrets.toml
 data_private/
+
+call_log.csv
+users_log.csv
+drafts.csv
+followup.csv
