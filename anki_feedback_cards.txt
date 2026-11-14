@@ -1,0 +1,12 @@
+Why does clicking a Streamlit button re-run my whole script, and how do I stop it re-calling the model?	Every widget interaction re-runs the script top to bottom. Store the result in st.session_state keyed by the question and only call the model when the question changes.
+What does st.rerun() do, and why did I use it after the vote?	It restarts the script immediately so the page redraws in its new state (vote buttons replaced by 'Thanks - logged').
+Why does my feedback log have 2 rows for 1 question?	One row is written when the answer appears (vote blank) and a second when the user clicks thumbs up/down. Every question is logged even if nobody votes.
+Why is writing feedback to a CSV on Streamlit Cloud not safe on its own?	The cloud filesystem is wiped on restart. I also print() each row so it appears in Manage app > Logs, and I download the CSV regularly.
+Why log every question and not only the thumbs votes?	Silence is not data. Most people never vote, so logging the question itself (and found=False) shows what users asked even without replies.
+How does the owner-only admin view work?	If ADMIN_KEY is set in Streamlit secrets and the URL has ?admin=<key>, the app shows the log table and a download button. Keep that URL private.
+Why did the keep-awake workflow not show in the GitHub Actions tab at first?	A workflow only appears once its file is on the default branch (main). It was only on my users-feedback branch until I merged and pushed.
+What does 'on: workflow_dispatch' add to a GitHub Actions workflow?	A manual 'Run workflow' button, so I can test it without waiting for the cron schedule.
+Why does a free Streamlit app seem dead to a new visitor, and how do I reduce that?	It sleeps after about 12 hours without traffic and shows a 'wake this app up' screen. A scheduled job that visits the app (keep-awake) keeps it warm.
+Why did 'python -m streamlit' say 'No module named streamlit' in my venv?	The packages were never installed into that venv. Fix: .venv\Scripts\python.exe -m pip install -r requirements.txt
+What did the fast-forward merge of users-feedback into main also publish?	Every older commit on that branch (agent sprint code, scripts, docs/ text files), not just my latest change. On a public repo, check what a branch contains before merging to main.
+Why test an app with a question I know the answer to before sharing it?	A known question with a known answer proves the whole path works (answer, source, logging) so any failure after sharing is about users, not setup.

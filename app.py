@@ -62,7 +62,25 @@ if os.environ.get("ADMIN_KEY") and st.query_params.get("admin") == os.environ["A
         st.write("No rows yet.")
 
 st.caption("Questions and thumbs up/down are logged to improve the app. Don't type private info.")
-q = st.text_input("Ask a question about the club")
+st.write(
+    "Ask about joining and trials, age groups, subscriptions and refunds, kit, match days, "
+    "weather, injuries, photos, travel or safeguarding. Answers come only from the club's documents."
+)
+EXAMPLES = [
+    "How many trial sessions can a new player attend?",
+    "Which age group is my child in?",
+    "What happens if we miss a session?",
+]
+
+
+def _use_example(text):
+    st.session_state["q"] = text
+
+
+st.write("Not sure what to ask? Try one:")
+for i, ex in enumerate(EXAMPLES):
+    st.button(ex, key=f"ex{i}", on_click=_use_example, args=(ex,))
+q = st.text_input("Ask a question about the club", key="q")
 if q.strip():
     if st.session_state.get("last_q") != q:  # buttons rerun the script; don't re-call the model
         with st.spinner("Thinking..."):
@@ -78,7 +96,12 @@ if q.strip():
         st.write(out["answer"])
         st.caption("Sources: " + ", ".join(out["sources"]))
     else:
-        st.info("I don't know - that isn't in the club documents.")
+        st.info(
+            "That isn't in the club documents, so I won't guess. The documents cover joining and trials, "
+            "age groups, missed sessions, volunteering, registration, subscriptions and refunds, kit and "
+            "equipment, match days, pitch booking, communications, photo consent, conduct, away travel, "
+            "weather, injuries and safeguarding. Try rephrasing your question around one of those."
+        )
     if not st.session_state.get("voted"):
         st.write("Was this helpful?")
         c1, c2, _ = st.columns([1, 1, 6])
