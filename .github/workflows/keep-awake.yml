@@ -1,0 +1,29 @@
+name: keep-awake
+on:
+  schedule:
+    - cron: "17 */8 * * *"   # every 8 hours (Streamlit sleeps after ~12h without a visitor)
+  workflow_dispatch: {}
+jobs:
+  visit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install playwright && playwright install --with-deps chromium
+      - name: Open the app like a visitor; click "wake up" if it is asleep
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          URL = "https://club-docs-rag-bdiqwj59dhm5h7rncrszqk.streamlit.app/"
+          with sync_playwright() as p:
+              b = p.chromium.launch(); pg = b.new_page()
+              pg.goto(URL, wait_until="domcontentloaded", timeout=60000)
+              pg.wait_for_timeout(8000)
+              for fr in [pg] + pg.frames:
+                  btn = fr.get_by_role("button", name="Yes, get this app back up!")
+                  if btn.count():
+                      btn.first.click(); print("was asleep - clicked wake"); pg.wait_for_timeout(30000); break
+              else:
+                  print("app was awake")
+              b.close()
+          PY
